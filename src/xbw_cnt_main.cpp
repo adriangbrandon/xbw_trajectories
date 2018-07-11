@@ -46,47 +46,14 @@ int main(int argc, char **argv) {
 
     std::vector<uint32_t > pattern = {7,3};
     auto solution = xbwCnt.sub_path_search(pattern);
-    for(uint64_t i = 0; i < xbwCnt.alpha.size(); ++i){
-        std::cout << "alpha: " << xbwCnt.alpha[i] << std::endl;
-    }
-    for(uint64_t i = 0; i < solution.size(); ++i){
-        std::cout << "xbw-values: " << solution[i] << std::endl;
-        size_t ini, end;
-        std::stack<std::pair<uint64_t, uint64_t >> stack_c;
-        uint64_t w_i = pattern[pattern.size()-1];
-        uint64_t v;
-        xbwCnt.get_children(solution[i], ini, end);
-        for(uint64_t j = end; j >= ini; --j){
-            stack_c.push({j, w_i});
+    auto sol = xbwCnt.get_trajectories(solution, pattern);
+    for(uint64_t i = 0; i < sol.size(); ++i){
+        std::cout << "solution: " << i << "--> ";
+        for(uint64_t j = 0; j < sol[i].size(); ++j){
+            std::cout << sol[i][j] << ", ";
         }
-        //std::cout << xbwCnt.alpha[solution[i]] << std::endl;
-        //std::cout << xbwCnt.graph[3][xbwCnt.alpha[solution[i]]-1].value << std::endl;
-        while(!stack_c.empty()){
-            auto sol = stack_c.top();
-            stack_c.pop();
-
-            v = xbwCnt.alpha[sol.first];
-            w_i = xbwCnt.graph[sol.second][v-1].value;
-            //std::cout << xbwCnt.alpha[sol.first] << std::endl;
-            //std::cout << sol.second << std::endl;
-           // std::cout << "pos: " << sol.first << std::endl;
-            std::cout << "sol: " << w_i << std::endl;
-            //std::cout << "size: " << xbwCnt.graph[w_i].size() << std::endl;
-            /*std::cout << "sol: " <<  w_i << std::endl;
-            w_i = xbwCnt.graph[sol.second][xbwCnt.alpha[sol.first]-1].value;
-            std::cout << "sol: " <<  w_i << std::endl;*/
-            xbwCnt.get_children(sol.first, ini, end);
-            for(uint64_t j = ini; j <= end; ++j){
-                stack_c.push({j, w_i});
-            }
-            if(ini > end){
-                std::cout << "solution" << std::endl;
-            }
-        }
-
-
+        std::cout << std::endl;
     }
-
     uint64_t start, end;
     std::reverse(pattern.begin(), pattern.end());
     if(cinctRml.labeled_search(pattern.begin(), pattern.end(), start, end)){
@@ -102,10 +69,5 @@ int main(int argc, char **argv) {
         }
 
     }
-
-
-
-
-
 
 }
