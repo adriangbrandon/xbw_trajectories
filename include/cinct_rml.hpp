@@ -229,7 +229,7 @@ namespace cinct {
 
 
         template <class array_t>
-        void extract_traj(size_type start, array_t &result){
+        void extract_traj(const size_type start, array_t &result){
 
             // binary search the character with C
             value_type upper_c = static_cast<value_type >(m_sigma), lower_c = 0; // lower_c inclusive, upper_c exclusive
@@ -247,7 +247,10 @@ namespace cinct {
             while(true){
                 size_type label = m_wt_label_bwt[j];
                 w = m_graph[w_i][label-1].value;
-                if(w < 2) break;
+                if(w < 2){
+                    result.push_back(1);
+                    break;
+                };
                 result.push_back(w);
                 j = m_C[w] + pseudo_rank_exist(j, label, w_i);
                 w_i = w;

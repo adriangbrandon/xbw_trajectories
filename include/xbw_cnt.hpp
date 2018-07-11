@@ -371,6 +371,39 @@ namespace xbw_trie {
             return ret;
         }
 
+        std::vector<word_type> get_trajectories(const std::vector<size_type> &solution, const word_type &pattern){
+            std::vector<std::vector<value_type >> ret;
+            for(size_type i = 0; i < solution.size(); ++i){
+                size_t ini, end;
+                std::stack<std::pair<value_type , word_type>> stack_c;
+                value_type w_i = pattern[pattern.size()-1];
+                value_type label, v;
+                get_children(solution[i], ini, end);
+                for(uint64_t j = end; j >= ini; --j){
+                    stack_c.push({j, pattern});
+                }
+                //std::cout << xbwCnt.alpha[solution[i]] << std::endl;
+                //std::cout << xbwCnt.graph[3][xbwCnt.alpha[solution[i]]-1].value << std::endl;
+                while(!stack_c.empty()){
+                    auto sol = stack_c.top();
+                    stack_c.pop();
+                    label = alpha[sol.first];
+                    w_i = sol.second[sol.second.size()-1];
+                    v = m_graph[w_i][label-1].value;
+                    sol.second.push_back(v);
+                    get_children(sol.first, ini, end);
+                    for(uint64_t j = ini; j <= end; ++j){
+                        stack_c.push({j, sol.second});
+                    }
+                    if(ini > end){
+                        ret.push_back(sol.second);
+                    }
+                    sdsl::util::clear(sol);
+                }
+            }
+            return ret;
+        }
+
 
         xbw_cnt& operator=(xbw_cnt &&p){
             if (this != &p){
